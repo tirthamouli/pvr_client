@@ -79,7 +79,7 @@ export const authRequest = async (req, token = false) => {
 
     // Step 2: Set auth token
     if (!token) {
-      token = store.getters("getUser").token;
+      token = store.getters.getAuth.token;
     }
     reqParams.headers.Authorization = `Bearer ${token}`;
 
@@ -89,6 +89,18 @@ export const authRequest = async (req, token = false) => {
     return data.value;
   } catch (err) {
     // Step 1: Return json
-    return await jsonParse(err.response.data);
+    const res = await jsonParse(err.response.data);
+
+    // Step 2: Check if it is forbidden for the user to access
+    if (res.value.code === 403) {
+      store.dispatch("logout");
+      return false;
+    }
+
+    // Step 3: Return res otherwise
+    if ("message" in res.value) {
+      store.setCommonErrorMessage(res.value.nessage);
+    }
+    return res.value;
   }
 };

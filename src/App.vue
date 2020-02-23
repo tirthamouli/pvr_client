@@ -11,6 +11,7 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import Navbar from "./components/navbar/Navbar";
 
 export default {
@@ -20,6 +21,23 @@ export default {
   }),
   components: {
     Navbar
+  },
+  computed: {
+    ...mapGetters({
+      isVerified: "getIsVerified"
+    })
+  },
+  watch: {
+    /**
+     * Watch to change routes
+     */
+    isVerified(current, prev) {
+      if (current === "VERIFIED" && prev === "NOT_VERIFIED") {
+        this.$router.push({ name: "Home" });
+      } else if (current === "NOT_VERIFIED" && prev === "VERIFIED") {
+        this.$router.push({ name: "Login" });
+      }
+    }
   },
   /**
    * Updated hook

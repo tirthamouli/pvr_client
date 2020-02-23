@@ -56,6 +56,7 @@
             </v-form>
 
             <!-- Error message snackbar -->
+            <error-message />
           </v-card-text>
         </v-card>
 
@@ -73,10 +74,14 @@
 </template>
 
 <script>
+import ErrorMessage from "../components/login/ErrorMessage";
 import { mapGetters, mapActions } from "vuex";
 
 export default {
   name: "Login",
+  components: {
+    ErrorMessage
+  },
   data() {
     return {
       username: "", // Username of the user
@@ -121,6 +126,17 @@ export default {
 
       // Step 4: Login
       this.login(request);
+    }
+  },
+  watch: {
+    /**
+     * Clear username and password when loading stops
+     */
+    loading(value) {
+      if (!value) {
+        this.username = "";
+        this.password = "";
+      }
     }
   }
 };

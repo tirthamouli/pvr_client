@@ -14,7 +14,7 @@
       <v-spacer />
 
       <!-- Signout button -->
-      <v-btn text color="grey">
+      <v-btn text color="grey" @click="logout">
         <span>Sign out</span>
         <v-icon right>exit_to_app</v-icon>
       </v-btn>
@@ -29,6 +29,7 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
 import Avatar from "./Avatar";
 import Drawer from "./Drawer";
 
@@ -40,6 +41,9 @@ export default {
     };
   },
   methods: {
+    ...mapActions({
+      logout: "logout"
+    }),
     /**
      * Show or hide the drawer
      */

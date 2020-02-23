@@ -38,11 +38,14 @@
         <v-divider></v-divider>
       </v-layout>
     </v-card>
+
+    <add-user />
   </v-container>
 </template>
 
 <script>
 import SearchBar from "./SearchBar";
+import AddUser from "./AddUser";
 import { mapGetters } from "vuex";
 
 export default {
@@ -53,7 +56,8 @@ export default {
     })
   },
   components: {
-    SearchBar // Search bar for searching user
+    SearchBar, // Search bar for searching user
+    AddUser // Add a new user
   }
 };
 </script>
