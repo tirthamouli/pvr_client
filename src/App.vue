@@ -1,7 +1,10 @@
 <template>
   <v-app>
-    <navbar />
-    <v-content>
+    <!-- Nav bar -->
+    <navbar v-if="currentRoute !== null && currentRoute !== 'Login'" />
+
+    <!-- Routes -->
+    <v-content class="mx-4 mb-4">
       <router-view />
     </v-content>
   </v-app>
@@ -13,10 +16,17 @@ import Navbar from "./components/navbar/Navbar";
 export default {
   name: "App",
   data: () => ({
-    //
+    currentRoute: "" // Stores the current route
   }),
   components: {
     Navbar
+  },
+  /**
+   * Updated hook
+   */
+  updated() {
+    // Updating the current route
+    this.currentRoute = this.$router.history.current.name;
   }
 };
 </script>

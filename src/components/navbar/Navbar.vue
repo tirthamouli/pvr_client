@@ -21,13 +21,15 @@
     </v-app-bar>
 
     <!-- Navigation drawer -->
-    <v-navigation-drawer v-model="showDrawer" app class="indigo">
+    <v-navigation-drawer v-model="showDrawer" app class="primary">
+      <avatar />
       <drawer />
     </v-navigation-drawer>
   </nav>
 </template>
 
 <script>
+import Avatar from "./Avatar";
 import Drawer from "./Drawer";
 
 export default {
@@ -46,7 +48,8 @@ export default {
     }
   },
   components: {
-    Drawer // List of links
+    Drawer, // List of links
+    Avatar // The avatar of the user
   }
 };
 </script>

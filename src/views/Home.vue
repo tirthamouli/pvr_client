@@ -1,12 +1,21 @@
 <template>
   <div class="home">
-    <h1>Homepage</h1>
+    <!-- Heading -->
+    <h1 class="subtitle-1 grey--text">Movies</h1>
+
+    <!-- Content -->
+    <content-vue />
   </div>
 </template>
 
 <script>
+import ContentVue from "../components/dashboard/Content";
+
 export default {
-  name: "Home"
+  name: "Home",
+  components: {
+    ContentVue
+  }
 };
 </script>
 

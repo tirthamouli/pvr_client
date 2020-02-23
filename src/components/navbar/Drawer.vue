@@ -1,6 +1,12 @@
 <template>
-  <v-list>
-    <v-list-item v-for="link in links" :key="link.text" router :to="link.route">
+  <v-list class="mt-5">
+    <v-list-item
+      v-for="link in links"
+      :key="link.text"
+      router
+      exact
+      :to="{ name: link.route }"
+    >
       <!-- Icon -->
       <v-list-item-action>
         <v-icon class="white--text">{{ link.icon }}</v-icon>
@@ -25,9 +31,9 @@ export default {
        * All the links
        */
       links: [
-        { icon: "dashboard", text: "Dashboard", route: "/" },
-        { icon: "person", text: "Add User", route: "/add/user" },
-        { icon: "movie", text: "Add Movie", route: "/add/movie" }
+        { icon: "dashboard", text: "Dashboard", route: "Home" },
+        { icon: "person", text: "User", route: "User" },
+        { icon: "movie", text: "Theatre", route: "Theatre" }
       ]
     };
   }

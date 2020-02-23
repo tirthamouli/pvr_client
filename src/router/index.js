@@ -5,6 +5,9 @@ import Home from "../views/Home.vue";
 Vue.use(VueRouter);
 
 const routes = [
+  /**
+   * Requires route guards
+   */
   {
     path: "/",
     name: "Home",
@@ -13,11 +16,30 @@ const routes = [
   {
     path: "/about",
     name: "About",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/About.vue")
+    component: () => import("../views/About.vue")
+  },
+  {
+    path: "/user",
+    name: "User",
+    component: () => import("../views/User.vue")
+  },
+  {
+    path: "/theatre",
+    name: "Theatre",
+    component: () => import("../views/Theatre.vue")
+  },
+  /**
+   * Requires reverse route guards
+   */
+  {
+    path: "/login",
+    name: "Login",
+    component: () => import("../views/Login.vue")
+  },
+  {
+    path: "/register",
+    name: "Register",
+    component: () => import("../views/Register.vue")
   }
 ];
 
@@ -25,6 +47,17 @@ const router = new VueRouter({
   mode: "history",
   base: process.env.BASE_URL,
   routes
+});
+
+/**
+ * Dynamically change the title
+ */
+router.beforeEach((to, from, next) => {
+  // Step 1: Change the title
+  document.title = `PVR | ${to.name}`;
+
+  // Step 2: Next
+  next();
 });
 
 export default router;
