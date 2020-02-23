@@ -64,7 +64,8 @@ export const simpleRequest = async req => {
     return data.value;
   } catch (err) {
     // Step 1: Return json
-    return await jsonParse(err.response.data);
+    const res = await jsonParse(err.response.data);
+    return res.value;
   }
 };
 
@@ -99,7 +100,7 @@ export const authRequest = async (req, token = false) => {
 
     // Step 3: Return res otherwise
     if ("message" in res.value) {
-      store.setCommonErrorMessage(res.value.nessage);
+      store.commit("setCommonErrorMessage", res.value.message);
     }
     return res.value;
   }

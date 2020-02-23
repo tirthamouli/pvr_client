@@ -52,6 +52,7 @@
             <v-flex xs12>
               <v-text-field
                 outlined
+                id="email"
                 type="email"
                 label="Email"
                 v-model="email"
@@ -59,21 +60,21 @@
                 :rules="emailRule"
                 :validate-on-blur="validateOnBlur"
               />
+            </v-flex>
 
-              <!-- City -->
-              <v-flex xs12>
-                <v-overflow-btn
-                  outlined
-                  label="City"
-                  editable
-                  :items="formattedCities"
-                  item-value="id"
-                  prepend-icon="location_on"
-                  v-model="city"
-                  :loading="cityLoading"
-                  @update:search-input="searchCityLocal"
-                ></v-overflow-btn>
-              </v-flex>
+            <!-- City -->
+            <v-flex xs12>
+              <v-overflow-btn
+                outlined
+                label="City"
+                editable
+                :items="formattedCities"
+                item-value="id"
+                prepend-icon="location_on"
+                v-model="city"
+                :loading="cityLoading"
+                @update:search-input="searchCityLocal"
+              ></v-overflow-btn>
             </v-flex>
           </v-layout>
 
@@ -97,88 +98,22 @@
 </template>
 
 <script>
+import { addUserMixin } from "../../mixins/addUserMixin";
 import { mapGetters, mapActions } from "vuex";
 
 export default {
   name: "AddUser",
-  data() {
-    return {
-      firstName: "", // Firstname of the new user
-      lastName: "", // Lastname of the new user
-      email: "", // Email of the new user
-      city: "", // City of the new user
-      validateOnBlur: true, // Should we validate on blur
-      searchCityTimeout: null, // Timeout for searching a city
-      prevCitySearch: false, // Previous search
-      showDialog: false, // Show dialog or not
-      /**
-       * Name verification rule
-       */
-      nameRule: [
-        v => {
-          return (
-            /^[a-z]+$/i.test(v) === true ||
-            "Please enter a valid name. Greater than 3 characters and no numbers"
-          );
-        }
-      ],
-      /**
-       * Email verification rule
-       */
-      emailRule: [
-        v => {
-          return (
-            /^([a-z0-9.-_%+]+)@([a-z0-9-]+)\.([a-z]{2,10})(\.[a-z]{2,5})?$/i.test(
-              v
-            ) === true || "Please enter a valid email"
-          );
-        }
-      ]
-    };
-  },
+  mixins: [addUserMixin],
   computed: {
     ...mapGetters({
-      cities: "getCities",
-      addUserLoading: "getAddUserLoading",
-      cityLoading: "getCityLoading"
-    }),
-    formattedCities() {
-      // Step 1: Check if undefined
-      if (typeof this.cities === "undefined") {
-        return [];
-      }
-
-      // Step 2: If not undefined
-      return this.cities.map(city => {
-        return { text: city.name, id: city.id };
-      });
-    }
+      errorMessage: "getCommonErrorMessage",
+      addUserLoading: "getAddUserLoading"
+    })
   },
   methods: {
     ...mapActions({
-      searchCity: "searchCity", // Searches a city
       addUser: "addUser" // Add a new user
     }),
-    /**
-     * Search city local
-     */
-    searchCityLocal(value) {
-      // Step 0: Detect a change
-      if (value === this.prevCitySearch) {
-        return false;
-      }
-      this.prevCitySearch = value;
-
-      // Step 1: Clear city timeout if not null
-      if (this.searchCityTimeout !== null) {
-        clearTimeout(this.searchCityTimeout);
-      }
-
-      // Step 2: Create a new timeout
-      this.searchCityTimeout = setTimeout(() => {
-        this.searchCity(value);
-      }, 500);
-    },
     /**
      * Add new user
      */
@@ -206,6 +141,9 @@ export default {
         this.firstName = "";
         this.lastName = "";
         this.email = "";
+        if (this.errorMessage === "") {
+          this.showDialog = false;
+        }
       }
     }
   }

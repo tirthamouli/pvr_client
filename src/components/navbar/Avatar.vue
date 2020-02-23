@@ -6,7 +6,7 @@
           {{ auth.firstName[0] + auth.lastName[0] }}
         </span>
       </v-avatar>
-      <p class="white--text subtitle-1 nt-1">
+      <p class="white--text subtitle-1 nt-1 text-center">
         {{ auth.firstName }} {{ auth.lastName }}
       </p>
     </v-flex>

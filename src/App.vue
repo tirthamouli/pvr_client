@@ -1,18 +1,28 @@
 <template>
   <v-app>
     <!-- Nav bar -->
-    <navbar v-if="currentRoute !== null && currentRoute !== 'Login'" />
+    <navbar
+      v-if="
+        currentRoute !== null &&
+          currentRoute !== 'Login' &&
+          currentRoute !== 'Register'
+      "
+    />
 
     <!-- Routes -->
     <v-content class="mx-4 mb-4">
       <router-view />
     </v-content>
+
+    <!-- Error message snack -->
+    <error-message />
   </v-app>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
 import Navbar from "./components/navbar/Navbar";
+import ErrorMessage from "./components/common/ErrorMessage";
 
 export default {
   name: "App",
@@ -20,7 +30,8 @@ export default {
     currentRoute: "" // Stores the current route
   }),
   components: {
-    Navbar
+    Navbar,
+    ErrorMessage
   },
   computed: {
     ...mapGetters({

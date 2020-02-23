@@ -319,6 +319,42 @@ export default new Vuex.Store({
       // Step 2: Check if login is successfull
       if (res.code !== 200) {
         context.commit("stopAuthLoading");
+        return context.commit("setAuthMessage", false);
+      }
+
+      // Step 3: Set the token
+      context.commit("setToken", res.token);
+
+      // Step 3: Verify the token
+      await context.dispatch("verify");
+
+      // Step -1: Stop loading
+      context.commit("stopAuthLoading");
+    },
+    /**
+     * Register a new user
+     * @param {Object} context
+     * @param {Object} request
+     */
+    async register(context, req) {
+      // Step 0 Check if loading
+      if (context.getters.getLoadingAuth) {
+        return;
+      }
+
+      // Step 1: Start loading
+      context.commit("startAuthLoading");
+
+      // Step 2: Send register request
+      const res = await simpleRequest({
+        url: "/api/auth/register",
+        method: "POST",
+        payload: req
+      });
+
+      // Step 2: Check if register is successfull
+      if (res.code !== 200) {
+        context.commit("stopAuthLoading");
         return context.commit("setAuthMessage", res.message);
       }
 
@@ -385,7 +421,7 @@ export default new Vuex.Store({
       value = value === null ? "" : value;
 
       // Step 2: Send request
-      const res = await authRequest({
+      const res = await simpleRequest({
         url: `/api/user/city/search?value=${encodeURI(value)}`,
         method: "GET"
       });

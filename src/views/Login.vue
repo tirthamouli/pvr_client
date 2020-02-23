@@ -1,5 +1,5 @@
 <template>
-  <v-container class="fill-height">
+  <v-container justify-center class="fill-height">
     <v-layout row justify-center align-center>
       <v-flex xs12 sm10 md8 lg6>
         <v-card flat>
