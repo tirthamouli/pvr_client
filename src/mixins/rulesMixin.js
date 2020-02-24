@@ -37,7 +37,7 @@ export const rulesMixin = {
        */
       relaxedNameRule: [
         v => {
-          return /^[a-z0-9_+\- ]+$/i.test(v) || "Not a valid input";
+          return /^[a-z0-9_+\-': ]+$/i.test(v) || "Not a valid input";
         }
       ],
       /**

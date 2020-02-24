@@ -10,11 +10,31 @@
 
 <script>
 import ContentVue from "../components/addMovie/Content";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
   name: "AddMovie",
   components: {
     ContentVue
+  },
+  computed: {
+    ...mapGetters({
+      movies: "getMovies"
+    })
+  },
+  methods: {
+    ...mapActions({
+      searchMovie: "searchMovie" // Search for movie
+    })
+  },
+  /**
+   * Created hook
+   */
+  created() {
+    // Search for movies by default when there is no search result
+    if (this.movies.length <= 0) {
+      this.searchMovie("");
+    }
   }
 };
 </script>
