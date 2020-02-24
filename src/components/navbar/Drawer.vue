@@ -33,7 +33,7 @@ export default {
       links: [
         { icon: "dashboard", text: "Dashboard", route: "Home" },
         { icon: "person", text: "User", route: "User" },
-        { icon: "movie", text: "Theatre", route: "Theatre" }
+        { icon: "movie", text: "AddMovie", route: "AddMovie" }
       ]
     };
   }

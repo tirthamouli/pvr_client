@@ -117,6 +117,14 @@ export default new Vuex.Store({
       return state.movies;
     },
 
+    // THEATRE GETTERS
+    /**
+     * Get weather theatres are being loaded
+     * @param {Object} state
+     */
+    getTheatreLoading(state) {
+      return state.theatreLoading;
+    },
     // CITY GETTERS
     /**
      * Get the cities

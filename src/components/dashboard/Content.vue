@@ -1,5 +1,16 @@
 <template>
   <v-container class="my-5">
+    <!-- Search bar -->
+    <search-bar />
+
+    <!-- Add new button -->
+    <v-layout row class="mb-2" justify-center>
+      <v-btn outlined text fab :to="{ name: 'AddMovie' }">
+        <v-icon>add</v-icon>
+      </v-btn>
+    </v-layout>
+
+    <!-- List -->
     <v-layout row wrap>
       <v-flex xs12 sm6 md4 lg3>
         <v-card flat class="text-center ma-3">
@@ -33,3 +44,14 @@
     </v-layout>
   </v-container>
 </template>
+
+<script>
+import SearchBar from "./SearchBar";
+
+export default {
+  name: "HomeContent",
+  components: {
+    SearchBar // Home search bar
+  }
+};
+</script>

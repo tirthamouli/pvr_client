@@ -103,9 +103,9 @@ const routes = [
     beforeEnter: auth
   },
   {
-    path: "/theatre",
-    name: "Theatre",
-    component: () => import("../views/Theatre.vue"),
+    path: "/add",
+    name: "AddMovie",
+    component: () => import("../views/AddMovie.vue"),
     beforeEnter: auth
   },
   /**
