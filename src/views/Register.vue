@@ -146,7 +146,7 @@
 <script>
 import { addUserMixin } from "../mixins/addUserMixin";
 import { rulesMixin } from "../mixins/rulesMixin";
-import { mapGetters, mapActions } from "vuex";
+import { mapGetters, mapMutations, mapActions } from "vuex";
 import ErrorMessage from "../components/login/ErrorMessage";
 
 export default {
@@ -171,6 +171,9 @@ export default {
     ...mapActions({
       register: "register" // Register action
     }),
+    ...mapMutations({
+      setCommonErrorMessage: "setCommonErrorMessage" // Set common error message
+    }),
     /**
      * Submit the form
      */
@@ -178,6 +181,11 @@ export default {
       // Step 1: Re-validate inputs
       if (!this.$refs.registerForm.validate()) {
         return false;
+      }
+
+      // Step 1.5 Check if city is empty
+      if (this.city === "") {
+        return this.setCommonErrorMessage("Please add city");
       }
 
       // Step 2: Get the data

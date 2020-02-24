@@ -80,7 +80,14 @@
 
       <!-- Add Button -->
       <v-flex xs12 class="px-5">
-        <v-btn rounded block ripple text class="ma-0 mt-5">
+        <v-btn
+          @click="addTheatreToList"
+          rounded
+          block
+          ripple
+          text
+          class="ma-0 mt-5"
+        >
           <v-icon left>add</v-icon>
           <span>Add theatre to list</span>
         </v-btn>
@@ -91,7 +98,7 @@
 
 <script>
 import AddTheatre from "./AddTheatre";
-import { mapGetters, mapActions } from "vuex";
+import { mapGetters, mapMutations, mapActions } from "vuex";
 import format from "date-fns/format";
 
 export default {
@@ -148,6 +155,9 @@ export default {
     ...mapActions({
       searchTheatre: "searchTheatre"
     }),
+    ...mapMutations({
+      setCommonErrorMessage: "setCommonErrorMessage" // Set common error message
+    }),
     /**
      * Search theatre by value
      */
@@ -167,6 +177,40 @@ export default {
       this.searchTheatreTimeout = setTimeout(() => {
         this.searchTheatre(value);
       }, 500);
+    },
+    /**
+     * Add theatre to list
+     */
+    addTheatreToList() {
+      // Step 1: Check if theatre is selected
+      if (this.theatre === "") {
+        return this.setCommonErrorMessage("Please select a theatre");
+      }
+
+      // Step 2: Check if start date is selected
+      if (this.startDate === null) {
+        return this.setCommonErrorMessage("Please select start date");
+      }
+
+      // Step 3: Check if end date is selected
+      if (this.endDate === null) {
+        return this.setCommonErrorMessage("Please select end date");
+      }
+
+      // Step 4: Emit event in case all are selected
+      this.$emit("added", {
+        start: this.startDate,
+        end: this.endDate,
+        theatreId: this.theatre,
+        name: this.theatres.find(cur => {
+          return this.theatre === cur.id;
+        }).name
+      });
+
+      // Step 5: Empty the input
+      this.theatre = "";
+      this.startDate = null;
+      this.endDate = null;
     }
   },
   watch: {

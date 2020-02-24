@@ -2,6 +2,14 @@ export const rulesMixin = {
   data() {
     return {
       /**
+       * Check if empty
+       */
+      anyTextRule: [
+        v => {
+          return v.trim().length > 0 || "Please enter some text";
+        }
+      ],
+      /**
        * Name verification rule
        */
       nameRule: [

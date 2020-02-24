@@ -73,7 +73,7 @@
 
 <script>
 import { addUserMixin } from "../../mixins/addUserMixin";
-import { mapGetters, mapActions } from "vuex";
+import { mapGetters, mapMutations, mapActions } from "vuex";
 import { rulesMixin } from "../../mixins/rulesMixin";
 
 export default {
@@ -94,6 +94,9 @@ export default {
     ...mapActions({
       addTheatre: "addTheatre" // Add a new user
     }),
+    ...mapMutations({
+      setCommonErrorMessage: "setCommonErrorMessage" // Set common error message
+    }),
     /**
      * Add new user
      */
@@ -101,6 +104,11 @@ export default {
       // Step 1: Re-validate inputs
       if (!this.$refs.addTheatreForm.validate()) {
         return false;
+      }
+
+      // Step 1.5 Check if city is empty
+      if (this.city === "") {
+        return this.setCommonErrorMessage("Please add city");
       }
 
       // Step 2: Generate request

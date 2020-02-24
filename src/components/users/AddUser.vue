@@ -94,7 +94,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from "vuex";
+import { mapGetters, mapMutations, mapActions } from "vuex";
 import { rulesMixin } from "../../mixins/rulesMixin";
 import { addUserMixin } from "../../mixins/addUserMixin";
 
@@ -111,6 +111,9 @@ export default {
     ...mapActions({
       addUser: "addUser" // Add a new user
     }),
+    ...mapMutations({
+      setCommonErrorMessage: "setCommonErrorMessage" // Set common error message
+    }),
     /**
      * Add new user
      */
@@ -118,6 +121,11 @@ export default {
       // Step 1: Re-validate inputs
       if (!this.$refs.addUserForm.validate()) {
         return false;
+      }
+
+      // Step 1.5 Check if city is empty
+      if (this.city === "") {
+        return this.setCommonErrorMessage("Please add city");
       }
 
       // Step 2: Generate request

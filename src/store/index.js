@@ -40,6 +40,7 @@ export default new Vuex.Store({
      */
     movies: [], // All the movies that we have fetched currently
     moviesLoading: false, // Weather movies are loading
+    addMovieLoading: false, // Weather movie is being loaded
 
     /**
      * City
@@ -116,6 +117,13 @@ export default new Vuex.Store({
      */
     getMovies(state) {
       return state.movies;
+    },
+    /**
+     * Check if we are sending an add movie request
+     * @param {Object} state
+     */
+    getAddMovieLoading(state) {
+      return state.addMovieLoading;
     },
 
     // THEATRE GETTERS
@@ -347,6 +355,29 @@ export default new Vuex.Store({
      */
     stopAddTheatreLoading(state) {
       state.addTheatreLoading = false;
+    },
+
+    // MOVIE
+    /**
+     * Start add movie loading
+     * @param {Object} state
+     */
+    startAddMovieLoading(state) {
+      state.addMovieLoading = true;
+    },
+    /**
+     * Stop add movie loading
+     * @param {Object} state
+     */
+    stopAddMovieLoading(state) {
+      state.addMovieLoading = false;
+    },
+    /**
+     * Push movie to the list of movies
+     * @param {Object} req
+     */
+    pushMovie(state, value) {
+      state.movies = [value, ...state.movies];
     },
 
     // OTHERS
@@ -589,6 +620,33 @@ export default new Vuex.Store({
 
       // Step 5: Stop loading
       return context.commit("stopAddTheatreLoading");
+    },
+    /**
+     * Add a movie
+     * @param {Object} context
+     * @param {Object} req
+     */
+    async addMovie(context, req) {
+      // Step 0: Start loading
+      context.commit("startAddMovieLoading");
+
+      // Step 2: Send request
+      const res = await authRequest({
+        url: "/api/movie/add",
+        method: "POST",
+        payload: req
+      });
+
+      // Step 3: Check response
+      if (!res || res.code !== 200) {
+        return context.commit("stopAddMovieLoading");
+      }
+
+      // Step 4: Add the user to the top of user list
+      context.commit("pushMovie", res.movie);
+
+      // Step 5: Stop loading
+      return context.commit("stopAddMovieLoading");
     },
     /**
      * Logout an user
