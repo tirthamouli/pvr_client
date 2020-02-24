@@ -10,7 +10,7 @@
             label="Name"
             v-model="name"
             prepend-icon="movie"
-            :rules="inputRule"
+            :rules="relaxedNameRule"
             :validate-on-blur="validateOnBlur"
           />
         </v-flex>
@@ -48,9 +48,11 @@
 
 <script>
 import Theatre from "./Theatre";
+import { rulesMixin } from "../../mixins/rulesMixin";
 
 export default {
   name: "AddMovieContent",
+  mixins: [rulesMixin],
   components: {
     Theatre
   },
@@ -59,15 +61,7 @@ export default {
       name: "", // Name of the movie
       description: "", // Description of the movie
       validateOnBlur: true, // Validate on blur
-      theatres: [], // The theatre array
-      /**
-       * Name input rule
-       */
-      inputRule: [
-        v => {
-          return /^[a-z0-9_+\- ]+$/i.test(v) || "Not a valid input";
-        }
-      ]
+      theatres: [] // The theatre array
     };
   }
 };

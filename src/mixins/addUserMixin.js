@@ -10,30 +10,7 @@ export const addUserMixin = {
       validateOnBlur: true, // Should we validate on blur
       searchCityTimeout: null, // Timeout for searching a city
       prevCitySearch: false, // Previous search
-      showDialog: false, // Show dialog or not
-      /**
-       * Name verification rule
-       */
-      nameRule: [
-        v => {
-          return (
-            /^[a-z]{3,}$/i.test(v) === true ||
-            "Please enter a valid name. Greater than 3 characters and no numbers"
-          );
-        }
-      ],
-      /**
-       * Email verification rule
-       */
-      emailRule: [
-        v => {
-          return (
-            /^([a-z0-9.-_%+]+)@([a-z0-9-]+)\.([a-z]{2,10})(\.[a-z]{2,5})?$/i.test(
-              v
-            ) === true || "Please enter a valid email"
-          );
-        }
-      ]
+      showDialog: false // Show dialog or not
     };
   },
   computed: {

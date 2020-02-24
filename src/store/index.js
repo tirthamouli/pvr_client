@@ -33,6 +33,7 @@ export default new Vuex.Store({
      */
     theatres: [], // The current theatre list
     theatreLoading: false, // If theatre is loading
+    addTheatreLoading: false, // When a new theatre is being added
 
     /**
      * Movie
@@ -119,12 +120,27 @@ export default new Vuex.Store({
 
     // THEATRE GETTERS
     /**
+     * Get all the theatres
+     * @param {Object} state
+     */
+    getTheatres(state) {
+      return state.theatres;
+    },
+    /**
      * Get weather theatres are being loaded
      * @param {Object} state
      */
     getTheatreLoading(state) {
       return state.theatreLoading;
     },
+    /**
+     * Weather add theatre is loading
+     * @param {Object} state
+     */
+    getAddTheatreLoading(state) {
+      return state.addTheatreLoading;
+    },
+
     // CITY GETTERS
     /**
      * Get the cities
@@ -287,6 +303,52 @@ export default new Vuex.Store({
       state.cityLoading = false;
     },
 
+    // THEATRE
+    /**
+     * Set the theatres
+     * @param {Object} state
+     * @param {Object} value
+     */
+    setTheatres(state, value) {
+      state.theatres = value;
+    },
+    /**
+     * Set the current value
+     * @param {Object} state
+     * @param {Object} value
+     */
+    setCurrentTheatre(state, value) {
+      state.theatres = [value];
+    },
+    /**
+     * Starts the theatre loading
+     * @param {Object} state
+     */
+    startTheatreLoading(state) {
+      state.theatreLoading = true;
+    },
+    /**
+     * Stops the theatre loading
+     * @param {Object} state
+     */
+    stopTheatreLoading(state) {
+      state.theatreLoading = false;
+    },
+    /**
+     * Start the add theatre loading
+     * @param {Object} state
+     */
+    startAddTheatreLoading(state) {
+      state.addTheatreLoading = true;
+    },
+    /**
+     * Stop the add theatre loading
+     * @param {Object} state
+     */
+    stopAddTheatreLoading(state) {
+      state.addTheatreLoading = false;
+    },
+
     // OTHERS
     /**
      * Clear all the lists
@@ -419,7 +481,7 @@ export default new Vuex.Store({
     /**
      * Search a city by name
      * @param {Object} context
-     * @param {Object} value
+     * @param {String} value
      */
     async searchCity(context, value) {
       // Step 0: Start loading
@@ -444,6 +506,35 @@ export default new Vuex.Store({
 
       // Step 5: Stop loading
       return context.commit("stopCityLoading");
+    },
+    /**
+     * Search theatre by name
+     * @param {Object} context
+     * @param {String} value
+     */
+    async searchTheatre(context, value) {
+      // Step 0: Start loading
+      context.commit("startTheatreLoading");
+
+      // Step 1: Change value
+      value = value === null ? "" : value;
+
+      // Step 2: Send request
+      const res = await authRequest({
+        url: `/api/theatre/search?value=${encodeURI(value)}`,
+        method: "GET"
+      });
+
+      // Step 3: Check response
+      if (!res || res.code !== 200) {
+        return context.commit("stopTheatreLoading");
+      }
+
+      // Step 4: Set the city
+      context.commit("setTheatres", res.theatres);
+
+      // Step 5: Stop loading
+      return context.commit("stopTheatreLoading");
     },
     /**
      * Add a new user
@@ -471,6 +562,33 @@ export default new Vuex.Store({
 
       // Step 5: Stop loading
       return context.commit("stopAddUserLoading");
+    },
+    /**
+     * Add a new theatre
+     * @param {Object} context
+     * @param {Object} req
+     */
+    async addTheatre(context, req) {
+      // Step 0: Start loading
+      context.commit("startAddTheatreLoading");
+
+      // Step 2: Send request
+      const res = await authRequest({
+        url: "/api/theatre/add",
+        method: "POST",
+        payload: req
+      });
+
+      // Step 3: Check response
+      if (!res || res.code !== 200) {
+        return context.commit("stopAddTheatreLoading");
+      }
+
+      // Step 4: Add the user to the top of user list
+      context.commit("setCurrentTheatre", res.theatre);
+
+      // Step 5: Stop loading
+      return context.commit("stopAddTheatreLoading");
     },
     /**
      * Logout an user

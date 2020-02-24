@@ -23,7 +23,6 @@
             <!-- First name -->
             <v-flex xs12 sm6>
               <v-text-field
-                outlined
                 type="text"
                 id="firstName"
                 label="First Name"
@@ -37,7 +36,6 @@
             <!-- Last name -->
             <v-flex xs12 sm6>
               <v-text-field
-                outlined
                 type="text"
                 id="lastName"
                 label="Last Name"
@@ -51,7 +49,6 @@
             <!-- Email -->
             <v-flex xs12>
               <v-text-field
-                outlined
                 id="email"
                 type="email"
                 label="Email"
@@ -65,7 +62,6 @@
             <!-- City -->
             <v-flex xs12>
               <v-overflow-btn
-                outlined
                 label="City"
                 editable
                 :items="formattedCities"
@@ -98,12 +94,13 @@
 </template>
 
 <script>
-import { addUserMixin } from "../../mixins/addUserMixin";
 import { mapGetters, mapActions } from "vuex";
+import { rulesMixin } from "../../mixins/rulesMixin";
+import { addUserMixin } from "../../mixins/addUserMixin";
 
 export default {
   name: "AddUser",
-  mixins: [addUserMixin],
+  mixins: [rulesMixin, addUserMixin],
   computed: {
     ...mapGetters({
       errorMessage: "getCommonErrorMessage",
@@ -149,3 +146,9 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+div >>> div.v-input__slot {
+  border-top: none !important;
+}
+</style>

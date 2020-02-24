@@ -145,12 +145,13 @@
 
 <script>
 import { addUserMixin } from "../mixins/addUserMixin";
+import { rulesMixin } from "../mixins/rulesMixin";
 import { mapGetters, mapActions } from "vuex";
 import ErrorMessage from "../components/login/ErrorMessage";
 
 export default {
   name: "Login",
-  mixins: [addUserMixin],
+  mixins: [rulesMixin, addUserMixin],
   components: {
     ErrorMessage
   },
@@ -158,42 +159,7 @@ export default {
     return {
       username: "", // Username of the user
       password: "", // Password of the user
-      repeatPassword: "", // Repeat password
-      /**
-       * Username rules for username
-       */
-      usernameRule: [
-        v => {
-          return (
-            /^[a-z0-9_]{3,}$/i.test(v) === true ||
-            "Username can only have letters and numbers. Minimum length is 3"
-          );
-        }
-      ],
-      /**
-       * Password rules
-       */
-      passwordRule: [
-        v => {
-          return (
-            /^(?=.{8,})(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).*$/.test(
-              v
-            ) === true ||
-            "Minimum length is 8, must contain uppercase, lowercase, number and special chars !@#%&"
-          );
-        }
-      ],
-      /**
-       * Repeat password rules
-       */
-      repeatPasswordRule: [
-        v => {
-          return (
-            v === this.password ||
-            "Repeat password must be the same as password"
-          );
-        }
-      ]
+      repeatPassword: "" // Repeat password
     };
   },
   computed: {

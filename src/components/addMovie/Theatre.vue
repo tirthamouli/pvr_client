@@ -19,19 +19,16 @@
         ></v-overflow-btn>
       </v-flex>
 
-      <v-flex xs3>
-        <v-layout row justify-center>
-          <!-- Add new -->
-          <v-btn right outlined rounded ripple small text>
-            <v-icon left>add</v-icon>
-            <span>New</span>
-          </v-btn>
-        </v-layout>
-      </v-flex>
+      <!-- Add theatre -->
+      <add-theatre />
 
       <!-- Start date -->
       <v-flex xs12 sm6>
-        <v-menu v-model="startDateMenu" :close-on-content-click="false">
+        <v-menu
+          max-width="290"
+          v-model="startDateMenu"
+          :close-on-content-click="false"
+        >
           <!-- Activator -->
           <template v-slot:activator="{ on }">
             <v-text-field
@@ -48,13 +45,18 @@
           <v-date-picker
             v-model="startDate"
             @change="startDateMenu = false"
+            :max="endDate"
           ></v-date-picker>
         </v-menu>
       </v-flex>
 
       <!-- End date -->
       <v-flex xs12 sm6>
-        <v-menu v-model="endDateMenu" :close-on-content-click="false">
+        <v-menu
+          max-width="290"
+          v-model="endDateMenu"
+          :close-on-content-click="false"
+        >
           <!-- Activator -->
           <template v-slot:activator="{ on }">
             <v-text-field
@@ -71,6 +73,7 @@
           <v-date-picker
             v-model="endDate"
             @change="endDateMenu = false"
+            :min="startDate"
           ></v-date-picker>
         </v-menu>
       </v-flex>
@@ -87,11 +90,15 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import AddTheatre from "./AddTheatre";
+import { mapGetters, mapActions } from "vuex";
 import format from "date-fns/format";
 
 export default {
   name: "AddMovieTheatre",
+  components: {
+    AddTheatre // Add a new theatre menu
+  },
   data() {
     return {
       startDateMenu: false, // Start date menu
@@ -99,12 +106,15 @@ export default {
       endDateMenu: false, // End date menu
       endDate: null, // End date
       prevSearchedTheatre: "", // Stores the previously searched theatres
-      theatre: "" //The current selected theatre
+      theatre: "", //The current selected theatre
+      searchTheatreTimeout: null // Stores current timeout
     };
   },
   computed: {
     ...mapGetters({
-      theatreLoading: "getTheatreLoading"
+      theatreLoading: "getTheatreLoading",
+      addTheatreLoading: "getAddTheatreLoading",
+      theatres: "getTheatres"
     }),
     /**
      * Start date shown to user
@@ -126,12 +136,48 @@ export default {
      * List of searched theatres
      */
     formattedTheatres() {
-      return [];
+      return this.theatres.map(theatre => {
+        return {
+          text: theatre.name,
+          id: theatre.id
+        };
+      });
     }
   },
   methods: {
+    ...mapActions({
+      searchTheatre: "searchTheatre"
+    }),
+    /**
+     * Search theatre by value
+     */
     searchTheatreLocal(value) {
-      console.log(value);
+      // Step 0: Detect a change
+      if (value === this.prevSearchedTheatre) {
+        return false;
+      }
+      this.prevSearchedTheatre = value;
+
+      // Step 1: Clear city timeout if not null
+      if (this.searchTheatreTimeout !== null) {
+        clearTimeout(this.searchTheatreTimeout);
+      }
+
+      // Step 2: Create a new timeout
+      this.searchTheatreTimeout = setTimeout(() => {
+        this.searchTheatre(value);
+      }, 500);
+    }
+  },
+  watch: {
+    /**
+     * Update when stop adding
+     */
+    addTheatreLoading(value) {
+      if (!value) {
+        this.prevSearchedTheatre = this.theatres[0].name;
+        this.theatre = this.theatres[0].id;
+      }
     }
   }
 };
