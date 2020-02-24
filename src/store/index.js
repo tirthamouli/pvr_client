@@ -34,6 +34,12 @@ export default new Vuex.Store({
     users: [], // All the users which we have fetched currently,
     usersLoading: false, // Weather users are loading
     addUserLoading: false, // Weather user is being added
+    userPagination: {
+      value: "",
+      currentPage: 0,
+      lastPage: false,
+      loading: false
+    }, // Stores user pagination details
 
     /**
      * Theatre
@@ -48,6 +54,12 @@ export default new Vuex.Store({
     movies: [], // All the movies that we have fetched currently
     moviesLoading: false, // Weather movies are loading
     addMovieLoading: false, // Weather movie is being loaded
+    moviePagination: {
+      value: "",
+      currentPage: 0,
+      lastPage: false,
+      loading: false
+    }, // Stores movie pagination details
 
     /**
      * City
@@ -116,6 +128,13 @@ export default new Vuex.Store({
       return state.users;
     },
     /**
+     * Get the movie pagination
+     * @param {Object} state
+     */
+    getUserPagination(state) {
+      return state.userPagination;
+    },
+    /**
      * Get weather users are loading or not
      * @param {Object} state
      */
@@ -151,6 +170,13 @@ export default new Vuex.Store({
      */
     getAddMovieLoading(state) {
       return state.addMovieLoading;
+    },
+    /**
+     * Get the movie pagination
+     * @param {Object} state
+     */
+    getMoviePagination(state) {
+      return state.moviePagination;
     },
 
     // THEATRE GETTERS
@@ -293,6 +319,37 @@ export default new Vuex.Store({
      */
     setUsers(state, value) {
       state.users = value;
+      state.userPagination = {
+        ...state.userPagination,
+        currentPage: 1,
+        lastPage: value.length < 10 ? true : false,
+        value: value.value
+      };
+    },
+    /**
+     * Set the user
+     * @param {Object} state
+     * @param {Object} value
+     */
+    setUsersNext(state, value) {
+      // Step 1: Create an object for the ids
+      const keyObj = {};
+      state.users.forEach(user => {
+        keyObj[user.id] = true;
+      });
+
+      // Step 2: Filter the new values
+      value = value.filter(curVal => {
+        return !(curVal.id in keyObj);
+      });
+
+      // Step 3: Push the result
+      state.users.push(...value);
+      state.userPagination = {
+        ...state.userPagination,
+        currentPage: state.userPagination.currentPage + 1,
+        lastPage: value.length < 10 ? true : false
+      };
     },
     /**
      * Add user to array of user
@@ -310,11 +367,31 @@ export default new Vuex.Store({
       state.usersLoading = true;
     },
     /**
+     * Start loading
+     * @param {Object} state
+     */
+    startUserNextLoading(state) {
+      state.userPagination = {
+        ...state.userPagination,
+        loading: true
+      };
+    },
+    /**
      * Stops user loading
      * @param {Object} state
      */
     stopUserLoading(state) {
       state.usersLoading = false;
+    },
+    /**
+     * Stop loading
+     * @param {Object} state
+     */
+    stopUserNextLoading(state) {
+      state.userPagination = {
+        ...state.userPagination,
+        loading: false
+      };
     },
     /**
      * Start add user loading
@@ -409,6 +486,37 @@ export default new Vuex.Store({
      */
     setMovies(state, value) {
       state.movies = value;
+      state.moviePagination = {
+        ...state.moviePagination,
+        currentPage: 1,
+        lastPage: value.length < 15 ? true : false,
+        value: value.value
+      };
+    },
+    /**
+     * Append to movie list
+     * @param {Object} state
+     * @param {Object} value
+     */
+    setMoviesNext(state, value) {
+      // Step 1: Create an object for the ids
+      const keyObj = {};
+      state.movies.forEach(movie => {
+        keyObj[movie.id] = true;
+      });
+
+      // Step 2: Filter the new values
+      value = value.filter(curVal => {
+        return !(curVal.id in keyObj);
+      });
+
+      // Step 3: Push the elements
+      state.movies.push(...value);
+      state.moviePagination = {
+        ...state.moviePagination,
+        currentPage: state.moviePagination.currentPage + 1,
+        lastPage: value.length < 15 ? true : false
+      };
     },
     /**
      * Start loading
@@ -418,11 +526,31 @@ export default new Vuex.Store({
       state.moviesLoading = true;
     },
     /**
+     * Start movie pagination loading
+     * @param {Object} state
+     */
+    startMoviesNextLoading(state) {
+      state.moviePagination = {
+        ...state.moviePagination,
+        loading: true
+      };
+    },
+    /**
      * Stop loading
      * @param {Object} state
      */
     stopMoviesLoading(state) {
       state.moviesLoading = false;
+    },
+    /**
+     * Start movie pagination loading
+     * @param {Object} state
+     */
+    stopMoviesNextLoading(state) {
+      state.moviePagination = {
+        ...state.moviePagination,
+        loading: false
+      };
     },
     /**
      * Start add movie loading
@@ -586,10 +714,46 @@ export default new Vuex.Store({
       }
 
       // Step 3: Set users
+      res.users.value = name;
       context.commit("setUsers", res.users);
 
       // Step 4: Stop loading
       context.commit("stopUserLoading");
+    },
+    /**
+     * Search for an user by name
+     * @param {String} name
+     */
+    async searchUserNextByName(context) {
+      // Step 1: Check if loading
+      if (
+        context.getters.getUserPagination.loading ||
+        context.getters.getUserPagination.lastPage
+      ) {
+        return;
+      }
+
+      // Step 2: Start loading
+      context.commit("startUserNextLoading");
+
+      // Step 3: Send verification request
+      const res = await authRequest({
+        url: `/api/user/search?value=${encodeURI(
+          context.getters.getUserPagination.value
+        )}&page=${context.getters.getUserPagination.currentPage}`,
+        method: "GET"
+      });
+
+      // Step 2: Check if we get a res
+      if (!res || res.code !== 200) {
+        return context.commit("stopUserNextLoading");
+      }
+
+      // Step 3: Set users
+      context.commit("setUsersNext", res.users);
+
+      // Step 4: Stop loading
+      context.commit("stopUserNextLoading");
     },
     /**
      * Search a city by name
@@ -673,10 +837,47 @@ export default new Vuex.Store({
       }
 
       // Step 4: Set the city
+      res.movies.value = value;
       context.commit("setMovies", res.movies);
 
       // Step 5: Stop loading
       return context.commit("stopMoviesLoading");
+    },
+    /**
+     * Search movie by name next
+     * @param {Object} context
+     * @param {String} value
+     */
+    async searchMovieNext(context) {
+      // Step 1: Check if loading
+      if (
+        context.getters.getMoviePagination.loading ||
+        context.getters.getMoviePagination.lastPage
+      ) {
+        return;
+      }
+
+      // Step 0: Start loading
+      context.commit("startMoviesNextLoading");
+
+      // Step 2: Send request
+      const res = await authRequest({
+        url: `/api/movie/search?value=${encodeURI(
+          context.getters.getMoviePagination.value
+        )}&page=${context.getters.getMoviePagination.currentPage}`,
+        method: "GET"
+      });
+
+      // Step 3: Check response
+      if (!res || res.code !== 200) {
+        return context.commit("stopMoviesNextLoading");
+      }
+
+      // Step 4: Set the city
+      context.commit("setMoviesNext", res.movies);
+
+      // Step 5: Stop loading
+      return context.commit("stopMoviesNextLoading");
     },
     /**
      * Add a new user
