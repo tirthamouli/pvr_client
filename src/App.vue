@@ -1,5 +1,8 @@
 <template>
   <v-app>
+    <!-- Background progress -->
+    <background-progress />
+
     <!-- Nav bar -->
     <navbar
       v-if="
@@ -20,9 +23,10 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
 import Navbar from "./components/navbar/Navbar";
-import ErrorMessage from "./components/common/ErrorMessage";
+import ErrorMessage from "./components/common/ErrorOrSuccessMessage";
+import BackgroundProgress from "./components/common/BackgroundProgress";
+import { mapGetters } from "vuex";
 
 export default {
   name: "App",
@@ -30,8 +34,9 @@ export default {
     currentRoute: "" // Stores the current route
   }),
   components: {
-    Navbar,
-    ErrorMessage
+    Navbar, // Navbar
+    ErrorMessage, // Common error message
+    BackgroundProgress // Background progress
   },
   computed: {
     ...mapGetters({

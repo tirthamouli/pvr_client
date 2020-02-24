@@ -2,7 +2,7 @@
   <v-dialog max-width="600px" v-model="showDialog">
     <!-- Activator -->
     <template v-slot:activator="{ on }">
-      <v-layout row class="mt-4" justify-center>
+      <v-layout row class="mt-0 mb-4" justify-center>
         <v-btn outlined v-on="on" text fab>
           <v-icon>add</v-icon>
         </v-btn>

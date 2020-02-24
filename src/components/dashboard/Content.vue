@@ -34,7 +34,11 @@
 
           <!-- Action -->
           <v-card-actions>
-            <v-btn text color="grey">
+            <v-btn
+              text
+              color="grey"
+              @click="sendNotification({ movieId: movie.id })"
+            >
               <v-icon small left>message</v-icon>
               <span>Notify</span>
             </v-btn>
@@ -47,7 +51,7 @@
 
 <script>
 import SearchBar from "./SearchBar";
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 
 export default {
   name: "HomeContent",
@@ -58,6 +62,11 @@ export default {
   },
   components: {
     SearchBar // Home search bar
+  },
+  methods: {
+    ...mapActions({
+      sendNotification: "sendNotification"
+    })
   }
 };
 </script>

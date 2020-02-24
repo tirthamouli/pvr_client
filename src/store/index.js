@@ -1,3 +1,9 @@
+/**
+ * Vuex store
+ * In a real project, it is better to break vuex into named modules
+ * Author: Tirthamouli Baidya
+ */
+
 import Vue from "vue";
 import Vuex from "vuex";
 
@@ -20,6 +26,7 @@ export default new Vuex.Store({
      * Common error message
      */
     commonErrorMessage: "", // A common error message
+    commonSuccessMessage: "", // A common success message
 
     /**
      * User
@@ -46,7 +53,12 @@ export default new Vuex.Store({
      * City
      */
     cities: [], // All the cities currently searched
-    cityLoading: false
+    cityLoading: false, // Weather cities are being loaded
+
+    /**
+     * Mail
+     */
+    sendingMail: false // Weather a mail is being sent or not. Only one mail request maybe sent at a time
   },
   getters: {
     // COMMON
@@ -57,6 +69,14 @@ export default new Vuex.Store({
     getCommonErrorMessage(state) {
       return state.commonErrorMessage;
     },
+    /**
+     * Get the global success message
+     * @param {Object} state
+     */
+    getCommonSuccessMessage(state) {
+      return state.commonSuccessMessage;
+    },
+
     // AUTH GETTERS
     /**
      * Get the auth details
@@ -170,6 +190,15 @@ export default new Vuex.Store({
      */
     getCityLoading(state) {
       return state.cityLoading;
+    },
+
+    // MAIL GETTERS
+    /**
+     * Get weather mail is being sent or not
+     * @param {Object} state
+     */
+    getSendingMail(state) {
+      return state.sendingMail;
     }
   },
   mutations: {
@@ -181,6 +210,14 @@ export default new Vuex.Store({
      */
     setCommonErrorMessage(state, value) {
       state.commonErrorMessage = value;
+    },
+    /**
+     * Set the global success message
+     * @param {Object} state
+     * @param {String} value
+     */
+    setCommonSuccessMessage(state, value) {
+      state.commonSuccessMessage = value;
     },
     // AUTH
     /**
@@ -407,6 +444,22 @@ export default new Vuex.Store({
      */
     pushMovie(state, value) {
       state.movies.unshift(value);
+    },
+
+    // EMAIL
+    /**
+     * Start sending mail
+     * @param {Object} state
+     */
+    startSendingMail(state) {
+      state.sendingMail = true;
+    },
+    /**
+     * Stop sending mail
+     * @param {Object} state
+     */
+    stopSendingMail(state) {
+      state.sendingMail = false;
     },
 
     // OTHERS
@@ -705,6 +758,78 @@ export default new Vuex.Store({
 
       // Step 5: Stop loading
       return context.commit("stopAddMovieLoading");
+    },
+    /**
+     * Send mail to an user
+     * @param {Object} context
+     * @param {Object} req
+     */
+    async sendMail(context, req) {
+      // Step 1: Check if mail is already being sent
+      if (context.getters.getSendingMail) {
+        return context.commit(
+          "setCommonErrorMessage",
+          "only one mail request can be sent at a time"
+        );
+      }
+
+      // Step 2: Start loading
+      context.commit("startSendingMail");
+
+      // Step 3: Send request
+      const res = await authRequest({
+        url: "/api/user/mail",
+        method: "POST",
+        payload: req
+      });
+
+      // Step 4: Check response
+      if (!res || res.code !== 200) {
+        context.commit("setCommonErrorMessage", res.message);
+        return context.commit("stopSendingMail");
+      }
+
+      // Step 5: Set success message
+      context.commit("setCommonSuccessMessage", res.message);
+
+      // Step 6: Stop loading
+      return context.commit("stopSendingMail");
+    },
+    /**
+     * Send notification request
+     * @param {Object} context
+     * @param {Object} req
+     */
+    async sendNotification(context, req) {
+      // Step 1: Check if mail is already being sent
+      if (context.getters.getSendingMail) {
+        return context.commit(
+          "setCommonErrorMessage",
+          "only one mail request can be sent at a time"
+        );
+      }
+
+      // Step 2: Start loading
+      context.commit("startSendingMail");
+
+      // Step 3: Send request
+      const res = await authRequest({
+        url: "/api/movie/mail",
+        method: "POST",
+        payload: req
+      });
+
+      // Step 4: Check response
+      if (!res || res.code !== 200) {
+        context.commit("setCommonErrorMessage", res.message);
+        return context.commit("stopSendingMail");
+      }
+
+      // Step 5: Set success message
+      context.commit("setCommonSuccessMessage", res.message);
+
+      // Step 6: Stop loading
+      return context.commit("stopSendingMail");
     },
     /**
      * Logout an user

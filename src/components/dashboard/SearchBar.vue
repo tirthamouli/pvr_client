@@ -1,16 +1,5 @@
 <template>
   <span>
-    <!-- Search bar -->
-    <v-layout row class="mb-3 px-5">
-      <v-text-field
-        v-model="searchValue"
-        @input="searchLocal"
-        outlined
-        label="Search"
-        append-icon="search"
-      ></v-text-field>
-    </v-layout>
-
     <!-- Loader -->
     <v-progress-linear
       v-show="moviesLoading"
@@ -19,6 +8,17 @@
       rounded
       height="6"
     ></v-progress-linear>
+
+    <!-- Search bar -->
+    <v-layout row class="mt-2 mb-3 px-5">
+      <v-text-field
+        v-model="searchValue"
+        @input="searchLocal"
+        outlined
+        label="Search"
+        append-icon="search"
+      ></v-text-field>
+    </v-layout>
   </span>
 </template>
 
