@@ -11,7 +11,7 @@
     </v-layout>
 
     <!-- List -->
-    <v-layout row wrap>
+    <v-layout row wrap v-if="movies.length > 0">
       <v-flex xs12 sm6 md4 lg3 v-for="movie in movies" :key="movie.id">
         <v-card flat class="text-center ma-3">
           <!-- Avatar -->
@@ -46,6 +46,11 @@
         </v-card>
       </v-flex>
     </v-layout>
+
+    <!-- Nothing to show message -->
+    <h1 class="caption text-uppercase text-center" v-else>
+      Nothing to show! Add new movies
+    </h1>
   </v-container>
 </template>
 
