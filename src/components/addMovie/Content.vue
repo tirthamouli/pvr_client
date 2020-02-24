@@ -43,7 +43,7 @@
         :loading="loading"
       >
         <v-icon left>add</v-icon>
-        <span>Register</span>
+        <span>Add</span>
       </v-btn>
     </v-form>
   </v-container>
@@ -73,7 +73,8 @@ export default {
   },
   computed: {
     ...mapGetters({
-      loading: "getAddMovieLoading"
+      loading: "getAddMovieLoading",
+      errorMessage: "getCommonErrorMessage"
     })
   },
   methods: {
@@ -131,6 +132,18 @@ export default {
 
       // Step 3: Add the user
       this.addMovie(req);
+    }
+  },
+  watch: {
+    loading(value) {
+      if (!value) {
+        this.name = "";
+        this.description = "";
+        this.theatres = [];
+        if (this.errorMessage === "") {
+          this.$router.push({ name: "Home" });
+        }
+      }
     }
   }
 };

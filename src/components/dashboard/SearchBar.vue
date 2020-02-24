@@ -13,7 +13,7 @@
 
     <!-- Loader -->
     <v-progress-linear
-      v-show="usersLoading"
+      v-show="moviesLoading"
       color="primary"
       indeterminate
       rounded
@@ -35,13 +35,13 @@ export default {
   },
   computed: {
     ...mapGetters({
-      usersLoading: "getUsersLoading", // Weather users are loading
-      users: "getUsers" // The currently fetched user
+      moviesLoading: "getmoviesLoading", // Weather movies are loading
+      movies: "getMovies" // The currently fetched movies
     })
   },
   methods: {
     ...mapActions({
-      searchUserByName: "searchUserByName" // Searches an user by name
+      searchMovie: "searchMovie" // Searches an movie by name
     }),
     /**
      * Handle input in search
@@ -56,7 +56,7 @@ export default {
       // Step 2: Set the new timeout
       this.searchTimeout = setTimeout(() => {
         // Step 1: Search by name
-        this.searchUserByName(this.searchValue);
+        this.searchMovie(this.searchValue);
 
         // Step 2: Clear the variable
         this.searchTimeout = null;
@@ -67,9 +67,9 @@ export default {
    * Created hook
    */
   created() {
-    // Search for user by default when there is no search result
-    if (this.users.length <= 0) {
-      this.searchUserByName("");
+    // Search for movies by default when there is no search result
+    if (this.movies.length <= 0) {
+      this.searchMovie("");
     }
   }
 };

@@ -119,6 +119,13 @@ export default new Vuex.Store({
       return state.movies;
     },
     /**
+     * Get when movies are being fetched
+     * @param {Object} state
+     */
+    getmoviesLoading(state) {
+      return state.moviesLoading;
+    },
+    /**
      * Check if we are sending an add movie request
      * @param {Object} state
      */
@@ -359,6 +366,28 @@ export default new Vuex.Store({
 
     // MOVIE
     /**
+     * Set movies
+     * @param {Object} state
+     * @param {Array} value
+     */
+    setMovies(state, value) {
+      state.movies = value;
+    },
+    /**
+     * Start loading
+     * @param {Object} state
+     */
+    startMoviesLoading(state) {
+      state.moviesLoading = true;
+    },
+    /**
+     * Stop loading
+     * @param {Object} state
+     */
+    stopMoviesLoading(state) {
+      state.moviesLoading = false;
+    },
+    /**
      * Start add movie loading
      * @param {Object} state
      */
@@ -377,7 +406,7 @@ export default new Vuex.Store({
      * @param {Object} req
      */
     pushMovie(state, value) {
-      state.movies = [value, ...state.movies];
+      state.movies.unshift(value);
     },
 
     // OTHERS
@@ -566,6 +595,35 @@ export default new Vuex.Store({
 
       // Step 5: Stop loading
       return context.commit("stopTheatreLoading");
+    },
+    /**
+     * Search movie by name
+     * @param {Object} context
+     * @param {String} value
+     */
+    async searchMovie(context, value) {
+      // Step 0: Start loading
+      context.commit("startMoviesLoading");
+
+      // Step 1: Change value
+      value = value === null ? "" : value;
+
+      // Step 2: Send request
+      const res = await authRequest({
+        url: `/api/movie/search?value=${encodeURI(value)}`,
+        method: "GET"
+      });
+
+      // Step 3: Check response
+      if (!res || res.code !== 200) {
+        return context.commit("stopMoviesLoading");
+      }
+
+      // Step 4: Set the city
+      context.commit("setMovies", res.movies);
+
+      // Step 5: Stop loading
+      return context.commit("stopMoviesLoading");
     },
     /**
      * Add a new user

@@ -12,7 +12,7 @@
 
     <!-- List -->
     <v-layout row wrap>
-      <v-flex xs12 sm6 md4 lg3>
+      <v-flex xs12 sm6 md4 lg3 v-for="movie in movies" :key="movie.id">
         <v-card flat class="text-center ma-3">
           <!-- Avatar -->
           <v-responsive class="pt-4">
@@ -20,7 +20,7 @@
               <span
                 class="headline font-weight-light text-uppercase white--text"
               >
-                T
+                {{ movie.name[0] }}
               </span>
             </v-avatar>
           </v-responsive>
@@ -28,7 +28,7 @@
           <!-- Text -->
           <v-card-text>
             <div class="caption text-uppercase grey-text">
-              The shining
+              {{ movie.name }}
             </div>
           </v-card-text>
 
@@ -47,9 +47,15 @@
 
 <script>
 import SearchBar from "./SearchBar";
+import { mapGetters } from "vuex";
 
 export default {
   name: "HomeContent",
+  computed: {
+    ...mapGetters({
+      movies: "getMovies"
+    })
+  },
   components: {
     SearchBar // Home search bar
   }
