@@ -39,8 +39,9 @@ As an admin user, you can:
 3. Send email to the email address of any user
 4. Notify all the users using email about a movie when it is playing in one of the theatres in their city.
 
-The client side is made with Vue JS. 
-This web application is a PWA - Progressive Web Application with offline support and caching.
-The client side uses web workers for JSON parse and stringify as they are heavy tasks and can often block the main JS thread which can lead to stutters
-The client side consumes APIs provided by the nodeJS express server
+
+1. The client side is made with Vue JS. 
+2. This web application is a PWA - Progressive Web Application with offline support and caching.
+3. The client side uses web workers for JSON parse and stringify as they are heavy tasks and can often block the main JS thread which can lead to stutters
+4. The client side consumes APIs provided by the nodeJS express server
 
