@@ -62,7 +62,7 @@ export const jsonParse = str => {
     if (typeof Worker === "undefined") {
       try {
         resolve(JSON.parse(str));
-      } catch {
+      } catch (err) {
         resolve({});
       }
     }
@@ -84,7 +84,7 @@ export const jsonParse = str => {
       .catch(() => {
         try {
           resolve(JSON.parse(str));
-        } catch {
+        } catch (err) {
           resolve({});
         }
       });
@@ -101,7 +101,7 @@ export const jsonStringify = obj => {
     if (typeof Worker === "undefined") {
       try {
         resolve(JSON.stringify(obj));
-      } catch {
+      } catch (err) {
         resolve({});
       }
     }
@@ -123,7 +123,7 @@ export const jsonStringify = obj => {
       .catch(() => {
         try {
           resolve(JSON.stringify(obj));
-        } catch {
+        } catch (err) {
           resolve({});
         }
       });
